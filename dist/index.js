@@ -106,6 +106,7 @@ class Ikoddi {
             catch (err) {
                 throw err;
             }
+            ;
         });
     }
 }

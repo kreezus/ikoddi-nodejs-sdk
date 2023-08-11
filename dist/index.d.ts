@@ -7,7 +7,7 @@ export declare class Ikoddi {
     withApiBaseURL(apiBaseURL: string): Ikoddi;
     withGroupId(groupId: string): Ikoddi;
     _assertAllParametersAreCorrect(): void;
-    sendAirtime(numbers: Array<string>, ref: string, amount: string, campaignName: string, phonecode?: string, isoCode?: string): Promise<any>;
-    sendSMS(numbers: string, from: string, message: string, smsBroadCast: string, phonecode?: string, isoCode?: string): Promise<any>;
-    internetPlans(): Promise<any>;
+    sendAirtime(numbers: Array<string>, ref: string, amount: string, campaignName: string, phonecode?: string, isoCode?: string): Promise<import("axios").AxiosResponse<any, any>>;
+    sendSMS(numbers: Array<string>, from: string, message: string, smsBroadCast: string, phonecode?: string, isoCode?: string): Promise<import("axios").AxiosResponse<any, any>>;
+    internetPlans(): Promise<import("axios").AxiosResponse<any, any>>;
 }
