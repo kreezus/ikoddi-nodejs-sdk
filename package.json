@@ -1,6 +1,6 @@
 {
-  "name": "@ikoddi/client-sdk",
-  "version": "1.0.0",
+  "name": "ikoddi-client-sdk",
+  "version": "1.0.1",
   "description": "Ikoddi Airtime and Message (SMS, USSD) SDK. https://ikoddi.com",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

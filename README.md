@@ -3,13 +3,13 @@ The NodeJS Client SDK to communicate with IKODDI, the airtime and SMS delivery p
 
 ## How to install
 ```sh
-npm install --save @ikoddi/client-sdk
+npm install --save ikoddi-client-sdk
 ```
 
 ## How to use it ?
 
 ```ts
-import {Ikoddi} from '@ikoddi/client/sdk';
+import {Ikoddi} from 'ikoddi-client-sdk';
 
 // Initialize Ikoddi client with GroupID(account ID) and Api Key
 const ikoddiClient = new Ikoddi()
