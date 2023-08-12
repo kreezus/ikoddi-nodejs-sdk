@@ -1,7 +1,7 @@
 {
-  "name": "ikoddi-nodejs-sdk",
+  "name": "@ikoddi/client-sdk",
   "version": "1.0.0",
-  "description": "Ikoddi Airtime and Message SDK. https://app.ikoddi.com",
+  "description": "Ikoddi Airtime and Message (SMS, USSD) SDK. https://ikoddi.com",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
