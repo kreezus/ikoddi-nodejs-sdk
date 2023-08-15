@@ -11,6 +11,7 @@ npm install --save ikoddi-client-sdk
 ## How to use it ?
 
 ```ts
+
 import { Ikoddi } from "ikoddi-client-sdk";
 
 /**AIRTIME**/
