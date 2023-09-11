@@ -63,3 +63,30 @@ phoneCode : This is your international phone identifier. Default is 226,
 isoCode : This is the ISO code of your country. Default is BF
 */
 ```
+
+## OTP As A Service
+
+```ts
+// 1- Initialize Ikoddi Client
+const ikoddiClient = new Ikoddi()
+  .withApiKey("OyDOoUbrAaWMm5U67j4JIzwhzUeZvGWT")
+  .withGroupId("10268496")
+  // Create an OTP App and set its value
+  .withOtpAppId("clmecvbby0000j39j4ozy2z3c");
+
+// 2- Send OTP Code
+
+const otpResponse = await ikoddiClient.sendOTP("22670707070");
+console.log(otpResponse);
+// {"status":0,"otpToken":"UCQS2bNyfVOKENFcCnQTV17OTL/Ja2rt0ku5C0aZMopzE0kQOX10OQ4RF8aT2zQTN0LsTiozcY9e1YMxK7xAd8Tbz1xNnFMlIfz43D0ZQofy3TVAed1zmg52a1+29GGYGuN0NSzvE5fVPFxWvk0jC0f8q8R/84BxhmZD2OaMGVkh1DufftnSXvnV8LXtCMI3"}
+
+// The User should receive an OTP code
+
+// 3- Verify the OTP
+const otpVerifyResponse = await ikoddiClient
+  .verifyOTP({ identity: "22670707070", otp: "629185", verificationKey: otpResponse.otpToken })
+console.log(otpVerifyResponse);
+// {"status":0,"message":"OTP Matched for 22670707070"}
+
+
+```

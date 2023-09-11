@@ -1,10 +1,9 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -12,8 +11,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Ikoddi = void 0;
 const axios_1 = __importDefault(require("axios"));
+exports.SMSStatus = {
+    SendingOK: "SendingOK",
+    SendingOKNoReport: "SendingOKNoReport",
+    SendingError: "SendingError",
+    DeliveryOK: "DeliveryOK",
+    DeliveryFailed: "DeliveryFailed",
+    DeliveryPending: "DeliveryPending",
+    DeliveryUnknown: "DeliveryUnknown",
+    Error: "Error",
+};
+exports.SMSSMSCStatus = {
+    DeliverySuccess: "DeliverySuccess",
+    DeliveryFailure: "DeliveryFailure",
+    MessageBuffered: "MessageBuffered",
+    SmscSubmit: "SmscSubmit",
+    SmscReject: "SmscReject",
+};
 class Ikoddi {
     constructor() {
         this.apiBaseURL = "https://api.ikoddi.com/api/v1/groups/";
@@ -28,6 +43,10 @@ class Ikoddi {
     }
     withGroupId(groupId) {
         this.groupId = groupId;
+        return this;
+    }
+    withOtpAppId(otpAppId) {
+        this.otpAppId = otpAppId;
         return this;
     }
     _assertAllParametersAreCorrect() {
@@ -84,7 +103,47 @@ class Ikoddi {
                         "x-api-key": this.apiKey,
                     },
                 });
-                return sms;
+                return sms.data;
+            }
+            catch (err) {
+                throw err;
+            }
+        });
+    }
+    sendOTP(identity, type = "SMS") {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._assertAllParametersAreCorrect();
+            if (this.otpAppId === null || this.otpAppId === undefined) {
+                throw new Error("OTP App ID should be defined");
+            }
+            try {
+                const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/${type}/${encodeURI(identity)}`, {}, {
+                    headers: {
+                        "Content-type": "application/json",
+                        "x-api-key": this.apiKey,
+                    },
+                });
+                return otpResponse.data;
+            }
+            catch (err) {
+                throw err;
+            }
+        });
+    }
+    verifyOTP(otpData) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._assertAllParametersAreCorrect();
+            if (this.otpAppId === null || this.otpAppId === undefined) {
+                throw new Error("OTP App ID should be defined");
+            }
+            try {
+                const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/verify`, otpData, {
+                    headers: {
+                        "Content-type": "application/json",
+                        "x-api-key": this.apiKey,
+                    },
+                });
+                return otpResponse.data;
             }
             catch (err) {
                 throw err;
@@ -106,7 +165,6 @@ class Ikoddi {
             catch (err) {
                 throw err;
             }
-            ;
         });
     }
 }
