@@ -110,7 +110,7 @@ class Ikoddi {
             }
         });
     }
-    sendOTP(identity, type = "SMS") {
+    sendOTP(identity, type = "sms") {
         return __awaiter(this, void 0, void 0, function* () {
             this._assertAllParametersAreCorrect();
             if (this.otpAppId === null || this.otpAppId === undefined) {
