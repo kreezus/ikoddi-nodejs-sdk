@@ -57,7 +57,7 @@ export declare class Ikoddi {
     _assertAllParametersAreCorrect(): void;
     sendAirtime(numbers: Array<string>, ref: string, amount: string, campaignName: string, phonecode?: string, isoCode?: string): Promise<any>;
     sendSMS(numbers: Array<string>, from: string, message: string, smsBroadCast: string, phonecode?: string, isoCode?: string): Promise<SMS[]>;
-    sendOTP(identity: string, type?: "SMS" | "EMAIL"): Promise<OTPResponse>;
+    sendOTP(identity: string, type?: "sms" | "email"): Promise<OTPResponse>;
     verifyOTP(otpData: {
         verificationKey: string;
         otp: string;

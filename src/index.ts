@@ -155,7 +155,7 @@ export class Ikoddi {
   }
   async sendOTP(
     identity: string,
-    type: "SMS" | "EMAIL" = "SMS"
+    type: "sms" | "email" = "sms"
   ): Promise<OTPResponse> {
     this._assertAllParametersAreCorrect();
     if (this.otpAppId === null || this.otpAppId === undefined) {
