@@ -1,224 +1,186 @@
 import axios from "axios";
 
 export const SMSStatus = {
-  SendingOK: "SendingOK",
-  SendingOKNoReport: "SendingOKNoReport",
-  SendingError: "SendingError",
-  DeliveryOK: "DeliveryOK",
-  DeliveryFailed: "DeliveryFailed",
-  DeliveryPending: "DeliveryPending",
-  DeliveryUnknown: "DeliveryUnknown",
-  Error: "Error",
+    SendingOK: "SendingOK",
+    SendingOKNoReport: "SendingOKNoReport",
+    SendingError: "SendingError",
+    DeliveryOK: "DeliveryOK",
+    DeliveryFailed: "DeliveryFailed",
+    DeliveryPending: "DeliveryPending",
+    DeliveryUnknown: "DeliveryUnknown",
+    Error: "Error",
 };
 export type SMSStatus = (typeof SMSStatus)[keyof typeof SMSStatus];
 
 export const SMSSMSCStatus = {
-  DeliverySuccess: "DeliverySuccess",
-  DeliveryFailure: "DeliveryFailure",
-  MessageBuffered: "MessageBuffered",
-  SmscSubmit: "SmscSubmit",
-  SmscReject: "SmscReject",
+    DeliverySuccess: "DeliverySuccess",
+    DeliveryFailure: "DeliveryFailure",
+    MessageBuffered: "MessageBuffered",
+    SmscSubmit: "SmscSubmit",
+    SmscReject: "SmscReject",
 };
 
 export type SMSSMSCStatus = (typeof SMSSMSCStatus)[keyof typeof SMSSMSCStatus];
 export type SMS = {
-  id: string;
-  to: string;
-  message: string;
-  from: string;
-  cost: number;
-  smsAccountId: string;
-  status: SMSStatus;
-  smscStatus: SMSSMSCStatus | null;
-  smsBroadCast: string | null;
-  createdAt: Date;
-  updatedAt: Date;
+    id: string;
+    to: string;
+    message: string;
+    from: string;
+    cost: number;
+    smsAccountId: string;
+    status: SMSStatus;
+    smscStatus: SMSSMSCStatus | null;
+    smsBroadCast: string | null;
+    createdAt: Date;
+    updatedAt: Date;
 };
 
 export type OTPResponse = {
-  status: 0 | -1;
-  otpToken: string;
+    status: 0 | -1;
+    otpToken: string;
 };
 
 export type VerifyOPTRequest = {
-  identity: string;
-  otp: string;
-  verificationKey: string;
+    identity: string;
+    otp: string;
+    verificationKey: string;
 };
 export type VerifyOPTResponse = {
-  identity: string;
-  otp: string;
-  verificationKey: string;
+    identity: string;
+    otp: string;
+    verificationKey: string;
 };
 
 export class Ikoddi {
-  private apiKey: string | undefined;
-  private apiBaseURL: string;
-  private groupId: string | undefined;
-  private otpAppId: string | undefined;
-  constructor() {
-    this.apiBaseURL = "https://api.ikoddi.com/api/v1/groups/";
-  }
+    private apiKey?: string;
+    private apiBaseURL: string;
+    private groupId?: string;
+    private otpAppId?: string;
 
-  withApiKey(apiKey: string): Ikoddi {
-    this.apiKey = apiKey;
-    return this;
-  }
-  withApiBaseURL(apiBaseURL: string): Ikoddi {
-    this.apiBaseURL = apiBaseURL;
-    return this;
-  }
-  withGroupId(groupId: string): Ikoddi {
-    this.groupId = groupId;
-    return this;
-  }
-  withOtpAppId(otpAppId: string): Ikoddi {
-    this.otpAppId = otpAppId;
-    return this;
-  }
-  _assertAllParametersAreCorrect() {
-    if (this.apiBaseURL === null || this.apiBaseURL === undefined) {
-      throw new Error("Api Base URL should be defined");
+    constructor() {
+        this.apiBaseURL = "https://api.ikoddi.com/api/v1/groups/";
     }
-    if (this.apiKey === null || this.apiKey === undefined) {
-      throw new Error("Api Key should be defined");
+
+    withApiKey(apiKey: string): Ikoddi {
+        this.apiKey = apiKey;
+        return this;
     }
-    if (this.groupId === null || this.groupId === undefined) {
-      throw new Error("The group ID should be defined");
+
+    withApiBaseURL(apiBaseURL: string): Ikoddi {
+        this.apiBaseURL = apiBaseURL;
+        return this;
     }
-  }
-  async sendAirtime(
-    numbers: Array<string>,
-    ref: string,
-    amount: string,
-    campaignName: string,
-    phonecode: string = "226",
-    isoCode: string = "BF"
-  ) {
-    this._assertAllParametersAreCorrect();
-    const data = {
-      sentTo: numbers,
-      ref: ref,
-      amount: amount,
-      campaignName: campaignName,
-      countryNumberCode: phonecode,
-      countryStringCode: isoCode,
-    };
-    try {
-      const airtime = await axios.post(
-        `${this.apiBaseURL}${this.groupId}/airtimes`,
-        JSON.stringify(data),
-        {
-          headers: {
-            "Content-type": "application/json",
-            "x-api-key": this.apiKey,
-          },
+
+    withGroupId(groupId: string): Ikoddi {
+        this.groupId = groupId;
+        return this;
+    }
+
+    withOtpAppId(otpAppId: string): Ikoddi {
+        this.otpAppId = otpAppId;
+        return this;
+    }
+
+    private _validateRequiredParameters() {
+        const requiredParams = [
+            {name: 'Api Base URL', value: this.apiBaseURL},
+            {name: 'Api Key', value: this.apiKey},
+            {name: 'Group ID', value: this.groupId},
+        ];
+
+        for (const {name, value} of requiredParams) {
+            if (value === null || value === undefined) {
+                throw new Error(`${name} should be defined`);
+            }
         }
-      );
-      return airtime;
-    } catch (err) {
-      throw err;
     }
-  }
-  async sendSMS(
-    numbers: Array<string>,
-    from: string,
-    message: string,
-    smsBroadCast: string,
-    phonecode: string = "226",
-    isoCode: string = "BF"
-  ): Promise<SMS[]> {
-    this._assertAllParametersAreCorrect();
-    const data = {
-      sentTo: numbers,
-      message: message,
-      from: from,
-      smsBroadCast: smsBroadCast,
-      countryNumberCode: phonecode,
-      countryStringCode: isoCode,
-    };
-    try {
-      const sms = await axios.post(
-        `${this.apiBaseURL}${this.groupId}/sms`,
-        JSON.stringify(data),
-        {
-          headers: {
-            "Content-type": "application/json",
-            "x-api-key": this.apiKey,
-          },
+
+    private async _makeRequest<T>(
+        method: "get" | "post",
+        endpoint: string,
+        data?: any
+    ): Promise<T> {
+        this._validateRequiredParameters();
+        const url = `${this.apiBaseURL}${this.groupId}${endpoint}`;
+
+        const config = {
+            headers: {
+                "Content-type": "application/json",
+                "x-api-key": this.apiKey,
+            },
+        };
+
+        try {
+            if (method === "get") {
+                return (await axios.get<T>(url, config)).data;
+            }
+            return (await axios.post<T>(url, JSON.stringify(data), config)).data;
+        } catch (err) {
+            throw err;
         }
-      );
-      return sms.data;
-    } catch (err) {
-      throw err;
     }
-  }
-  async sendOTP(
-    identity: string,
-    type: "sms" | "email" = "sms"
-  ): Promise<OTPResponse> {
-    this._assertAllParametersAreCorrect();
-    if (this.otpAppId === null || this.otpAppId === undefined) {
-      throw new Error("OTP App ID should be defined");
+
+    async sendAirtime(
+        numbers: Array<string>,
+        ref: string,
+        amount: string,
+        campaignName: string,
+        phonecode: string = "226",
+        isoCode: string = "BF"
+    ) {
+        return this._makeRequest("post", "/airtimes", {
+            sentTo: numbers,
+            ref,
+            amount,
+            campaignName,
+            countryNumberCode: phonecode,
+            countryStringCode: isoCode,
+        });
     }
-    try {
-      const otpResponse = await axios.post(
-        `${this.apiBaseURL}${this.groupId}/otp/${
-          this.otpAppId
-        }/${type}/${encodeURI(identity)}`,
-        {},
-        {
-          headers: {
-            "Content-type": "application/json",
-            "x-api-key": this.apiKey,
-          },
+
+    async sendSMS(
+        numbers: Array<string>,
+        from: string,
+        message: string,
+        smsBroadCast: string,
+        phonecode: string = "226",
+        isoCode: string = "BF"
+    ): Promise<SMS[]> {
+        return this._makeRequest<SMS[]>("post", "/sms", {
+            sentTo: numbers,
+            message,
+            from,
+            smsBroadCast,
+            countryNumberCode: phonecode,
+            countryStringCode: isoCode,
+        });
+    }
+
+    async sendOTP(
+        identity: string,
+        type: "sms" | "email" = "sms"
+    ): Promise<OTPResponse> {
+        this._validateRequiredParameters();
+        if (!this.otpAppId) {
+            throw new Error("OTP App ID should be defined");
         }
-      );
-      return otpResponse.data;
-    } catch (err) {
-      throw err;
+        return this._makeRequest<OTPResponse>("post", `/otp/${this.otpAppId}/${type}/${encodeURI(identity)}`);
     }
-  }
-  async verifyOTP(otpData: {
-    verificationKey: string;
-    otp: string;
-    identity: string;
-  }): Promise<OTPResponse> {
-    this._assertAllParametersAreCorrect();
-    if (this.otpAppId === null || this.otpAppId === undefined) {
-      throw new Error("OTP App ID should be defined");
-    }
-    try {
-      const otpResponse = await axios.post(
-        `${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/verify`,
-        otpData,
-        {
-          headers: {
-            "Content-type": "application/json",
-            "x-api-key": this.apiKey,
-          },
+
+    async verifyOTP(otpData: {
+        verificationKey: string;
+        otp: string;
+        identity: string;
+    }): Promise<VerifyOPTResponse> {
+        this._validateRequiredParameters();
+        if (!this.otpAppId) {
+            throw new Error("OTP App ID should be defined");
         }
-      );
-      return otpResponse.data;
-    } catch (err) {
-      throw err;
+        return this._makeRequest<VerifyOPTResponse>("post", `/otp/${this.otpAppId}/verify`, otpData);
     }
-  }
-  async internetPlans() {
-    this._assertAllParametersAreCorrect();
-    try {
-      const internetPlans = await axios.get(
-        `${this.apiBaseURL}${this.groupId}/airtimes/internet-plans`,
-        {
-          headers: {
-            "Content-type": "application/json",
-            "x-api-key": this.apiKey,
-          },
-        }
-      );
-      return internetPlans;
-    } catch (err) {
-      throw err;
+
+    async internetPlans() {
+        this._validateRequiredParameters();
+        return this._makeRequest("get", '/airtimes/internet-plans');
     }
-  }
 }
