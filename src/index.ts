@@ -155,7 +155,8 @@ export class Ikoddi {
   }
   async sendOTP(
     identity: string,
-    type: "sms" | "email" = "sms"
+    type: "sms" | "email" = "sms",
+    messageContext: Record<string, any> = {}
   ): Promise<OTPResponse> {
     this._assertAllParametersAreCorrect();
     if (this.otpAppId === null || this.otpAppId === undefined) {
@@ -166,7 +167,7 @@ export class Ikoddi {
         `${this.apiBaseURL}${this.groupId}/otp/${
           this.otpAppId
         }/${type}/${encodeURI(identity)}`,
-        {},
+        messageContext,
         {
           headers: {
             "Content-type": "application/json",
