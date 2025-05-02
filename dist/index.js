@@ -110,14 +110,14 @@ class Ikoddi {
             }
         });
     }
-    sendOTP(identity, type = "sms") {
+    sendOTP(identity, type = "sms", messageContext = {}) {
         return __awaiter(this, void 0, void 0, function* () {
             this._assertAllParametersAreCorrect();
             if (this.otpAppId === null || this.otpAppId === undefined) {
                 throw new Error("OTP App ID should be defined");
             }
             try {
-                const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/${type}/${encodeURI(identity)}`, {}, {
+                const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/${type}/${encodeURI(identity)}`, messageContext, {
                     headers: {
                         "Content-type": "application/json",
                         "x-api-key": this.apiKey,
