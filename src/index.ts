@@ -155,7 +155,7 @@ export class Ikoddi {
   }
   async sendOTP(
     identity: string,
-    type: "sms" | "email" = "sms",
+    type: "sms" | "email" | "whatsapp" = "sms",
     messageContext: Record<string, any> = {}
   ): Promise<OTPResponse> {
     this._assertAllParametersAreCorrect();
@@ -164,8 +164,7 @@ export class Ikoddi {
     }
     try {
       const otpResponse = await axios.post(
-        `${this.apiBaseURL}${this.groupId}/otp/${
-          this.otpAppId
+        `${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId
         }/${type}/${encodeURI(identity)}`,
         messageContext,
         {
@@ -180,6 +179,35 @@ export class Ikoddi {
       throw err;
     }
   }
+
+  async sendMultiOTP(data: {
+    identities: Array<{
+      identity: string; // phone number or email address example: "22670000000" or "john.doe@example.com"
+      channel: "SMS" | "EMAIL" | "WHATSAPP";
+    }>;
+    messageContext?: Record<string, any>;
+  }): Promise<OTPResponse> {
+    this._assertAllParametersAreCorrect();
+    if (this.otpAppId === null || this.otpAppId === undefined) {
+      throw new Error("OTP App ID should be defined");
+    }
+    try {
+      const otpResponse = await axios.post(
+        `${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/send-multi`,
+        data,
+        {
+          headers: {
+            "Content-type": "application/json",
+            "x-api-key": this.apiKey,
+          },
+        }
+      );
+      return otpResponse.data;
+    } catch (err) {
+      throw err;
+    }
+  }
+
   async verifyOTP(otpData: {
     verificationKey: string;
     otp: string;

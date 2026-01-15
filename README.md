@@ -75,10 +75,42 @@ const ikoddiClient = new Ikoddi()
   .withOtpAppId("clmecvbby0000j39j4ozy2z3c");
 
 // 2- Send OTP Code
-
-const otpResponse = await ikoddiClient.sendOTP("22670707070");
+//send on a single OTP channel
+const otpResponse = await ikoddiClient.sendOTP("22670707070", "sms");
 console.log(otpResponse);
 // {"status":0,"otpToken":"UCQS2bNyfVOKENFcCnQTV17OTL/Ja2rt0ku5C0aZMopzE0kQOX10OQ4RF8aT2zQTN0LsTiozcY9e1YMxK7xAd8Tbz1xNnFMlIfz43D0ZQofy3TVAed1zmg52a1+29GGYGuN0NSzvE5fVPFxWvk0jC0f8q8R/84BxhmZD2OaMGVkh1DufftnSXvnV8LXtCMI3"}
+
+// or
+// send to multiple OTP channels
+
+const otpResponse = await ikoddiClient.sendMultiOTP({
+    identities: [
+      {
+        identity: "22670707070",
+        channel: "SMS",
+      },
+      {
+        identity: "22670707070",
+        channel: "WHATSAPP",
+      },
+    ],
+  });
+console.log(otpResponse);
+// {
+//   status: 0,
+//   otpToken: 'o2G3oFb4QdJJTqqrnFE67XzVbeVin8n22H4PnzWAYsrwqWWYT01U9RFxLd9ZTdSd6TQy5XSnNiTF+5TeCYakq7OdYWQKAg4TudNvAXjARoSbnLRHpQhruKp2Roz0743lTXIwhnvGhHIrGTZLm3iEZ+mx+4L8ama2ZGLCmSiyKrJfMPDq8YA29oEBu+fwOfa2JalPSZosknTdu4iYOKpXHoOAhdoZRhFqVROX8lOzz5SViVH5PhKnJyNh9GOXRcMN',
+//   results: [
+//     { identity: '22670707070',
+//       channel: 'SMS',
+//       success: true 
+//     },
+//     {
+//       identity: '22670707070',
+//       channel: 'WHATSAPP',
+//       success: true,
+//     }
+//   ]
+// }
 
 // The User should receive an OTP code
 
