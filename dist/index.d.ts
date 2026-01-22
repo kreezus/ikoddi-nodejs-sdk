@@ -8,7 +8,7 @@ export declare const SMSStatus: {
     DeliveryUnknown: string;
     Error: string;
 };
-export declare type SMSStatus = (typeof SMSStatus)[keyof typeof SMSStatus];
+export type SMSStatus = (typeof SMSStatus)[keyof typeof SMSStatus];
 export declare const SMSSMSCStatus: {
     DeliverySuccess: string;
     DeliveryFailure: string;
@@ -16,8 +16,8 @@ export declare const SMSSMSCStatus: {
     SmscSubmit: string;
     SmscReject: string;
 };
-export declare type SMSSMSCStatus = (typeof SMSSMSCStatus)[keyof typeof SMSSMSCStatus];
-export declare type SMS = {
+export type SMSSMSCStatus = (typeof SMSSMSCStatus)[keyof typeof SMSSMSCStatus];
+export type SMS = {
     id: string;
     to: string;
     message: string;
@@ -30,16 +30,16 @@ export declare type SMS = {
     createdAt: Date;
     updatedAt: Date;
 };
-export declare type OTPResponse = {
+export type OTPResponse = {
     status: 0 | -1;
     otpToken: string;
 };
-export declare type VerifyOPTRequest = {
+export type VerifyOPTRequest = {
     identity: string;
     otp: string;
     verificationKey: string;
 };
-export declare type VerifyOPTResponse = {
+export type VerifyOPTResponse = {
     identity: string;
     otp: string;
     verificationKey: string;
@@ -55,13 +55,20 @@ export declare class Ikoddi {
     withGroupId(groupId: string): Ikoddi;
     withOtpAppId(otpAppId: string): Ikoddi;
     _assertAllParametersAreCorrect(): void;
-    sendAirtime(numbers: Array<string>, ref: string, amount: string, campaignName: string, phonecode?: string, isoCode?: string): Promise<any>;
+    sendAirtime(numbers: Array<string>, ref: string, amount: string, campaignName: string, phonecode?: string, isoCode?: string): Promise<import("axios").AxiosResponse<any, any>>;
     sendSMS(numbers: Array<string>, from: string, message: string, smsBroadCast: string, phonecode?: string, isoCode?: string): Promise<SMS[]>;
-    sendOTP(identity: string, type?: "sms" | "email", messageContext?: Record<string, any>): Promise<OTPResponse>;
+    sendOTP(identity: string, type?: "sms" | "email" | "whatsapp", messageContext?: Record<string, any>): Promise<OTPResponse>;
+    sendMultiOTP(data: {
+        identities: Array<{
+            identity: string;
+            channel: "SMS" | "EMAIL" | "WHATSAPP";
+        }>;
+        messageContext?: Record<string, any>;
+    }): Promise<OTPResponse>;
     verifyOTP(otpData: {
         verificationKey: string;
         otp: string;
         identity: string;
     }): Promise<OTPResponse>;
-    internetPlans(): Promise<any>;
+    internetPlans(): Promise<import("axios").AxiosResponse<any, any>>;
 }
