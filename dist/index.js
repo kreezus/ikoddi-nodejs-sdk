@@ -1,9 +1,10 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
@@ -11,6 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Ikoddi = exports.SMSSMSCStatus = exports.SMSStatus = void 0;
 const axios_1 = __importDefault(require("axios"));
 exports.SMSStatus = {
     SendingOK: "SendingOK",
@@ -60,8 +62,8 @@ class Ikoddi {
             throw new Error("The group ID should be defined");
         }
     }
-    sendAirtime(numbers, ref, amount, campaignName, phonecode = "226", isoCode = "BF") {
-        return __awaiter(this, void 0, void 0, function* () {
+    sendAirtime(numbers_1, ref_1, amount_1, campaignName_1) {
+        return __awaiter(this, arguments, void 0, function* (numbers, ref, amount, campaignName, phonecode = "226", isoCode = "BF") {
             this._assertAllParametersAreCorrect();
             const data = {
                 sentTo: numbers,
@@ -85,8 +87,8 @@ class Ikoddi {
             }
         });
     }
-    sendSMS(numbers, from, message, smsBroadCast, phonecode = "226", isoCode = "BF") {
-        return __awaiter(this, void 0, void 0, function* () {
+    sendSMS(numbers_1, from_1, message_1, smsBroadCast_1) {
+        return __awaiter(this, arguments, void 0, function* (numbers, from, message, smsBroadCast, phonecode = "226", isoCode = "BF") {
             this._assertAllParametersAreCorrect();
             const data = {
                 sentTo: numbers,
@@ -110,14 +112,34 @@ class Ikoddi {
             }
         });
     }
-    sendOTP(identity, type = "sms", messageContext = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    sendOTP(identity_1) {
+        return __awaiter(this, arguments, void 0, function* (identity, type = "sms", messageContext = {}) {
             this._assertAllParametersAreCorrect();
             if (this.otpAppId === null || this.otpAppId === undefined) {
                 throw new Error("OTP App ID should be defined");
             }
             try {
                 const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/${type}/${encodeURI(identity)}`, messageContext, {
+                    headers: {
+                        "Content-type": "application/json",
+                        "x-api-key": this.apiKey,
+                    },
+                });
+                return otpResponse.data;
+            }
+            catch (err) {
+                throw err;
+            }
+        });
+    }
+    sendMultiOTP(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this._assertAllParametersAreCorrect();
+            if (this.otpAppId === null || this.otpAppId === undefined) {
+                throw new Error("OTP App ID should be defined");
+            }
+            try {
+                const otpResponse = yield axios_1.default.post(`${this.apiBaseURL}${this.groupId}/otp/${this.otpAppId}/send-multi`, data, {
                     headers: {
                         "Content-type": "application/json",
                         "x-api-key": this.apiKey,
